@@ -1,6 +1,7 @@
 <!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>房貸配息與分紅保單試算</title>
 <style>body{font-family:system-ui,-apple-system,"PingFang TC","Noto Sans TC",sans-serif;max-width:720px;margin:auto;padding:16px;line-height:1.6;color:#222}h2{border-bottom:1px solid #ddd;padding-bottom:4px;margin-top:1.8em}.warn{background:#fff4e5;border-left:4px solid #f0a020;padding:10px 12px;border-radius:6px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}label{font-size:.9em;display:block}input{width:100%;box-sizing:border-box;padding:8px;font-size:1em;border:1px solid #ccc;border-radius:6px}.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.95em}td,th{border-bottom:1px solid #eee;padding:6px;text-align:left}td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}.neg{color:#c22}.pos{color:#18853b}tr.hl{background:#eef5ff}small{color:#666}</style></head><body>
+<img src="img/mortgage-life.jpg" alt="房奴的一生：22歲出社會、30歲買1200萬物件貸款1000萬、30年每月付40,000房貸、60歲還完房貸物件2400萬" style="width:100%;border-radius:10px;margin-bottom:8px">
 <h1>房貸配息與分紅保單試算</h1>
 <p class="warn"><b>配息不保證、保價金不保證。</b>本頁數字皆為舉例試算，非保證收益，不構成投資或保險建議；實際以保單建議書、銀行核貸條件及市場為準。</p>
 <h2>房貸與配息試算</h2><small>假設利率全期固定；寬限期內只付息，寬限期後本金於剩餘年限攤還</small>
@@ -26,7 +27,27 @@
 <div class="tw"><table id="pfTbl"></table></div>
 <p><small id="pfNote">資料載入中…</small></p>
 <p><small>公式：分配金額＝總投資金額×比例；外幣基金先換算成該基金幣別；買到單位數＝金額×係數÷淨值；每月配息＝單位數×每單位配息×年配息次數÷12（季配、半年配、年配以月平均顯示），再換回台幣。其他幣別以臺灣銀行即期買賣中價換算。</small></p>
-<h2>分紅保單（PFK）第15–16年：保價金 vs 剩餘房貸</h2>
+<h2>分紅保單（PFK）建議書逐年：解約總額 vs 剩餘房貸</h2>
+<p class="warn"><b>保單紅利非保證。</b>數值由 PFK 建議書試算檔於副本重算後依保額線性換算（中／低分紅為預估、保證欄不含紅利），與正式建議書可能有小幅差異；實際以富邦人壽正式建議書與公司經營狀況為準。美元保單換算台幣另有匯率風險。</p>
+<p><button type="button" id="pkPre1">套用簡報案例（60歲女・2年期・每期約 2,063,949 台幣）</button> <button type="button" id="pkPre2">套用建議書原值（28歲男・躉繳・保額 28.9 萬美元）</button></p>
+<div class="grid">
+<label>客戶保險年齡<input id="pkAge" type="number" min="0" max="78" value="60"></label>
+<label>性別<select id="pkSex"><option value="F">女</option><option value="M">男</option></select></label>
+<label>繳費年期<select id="pkPay"><option value="2">2年期（年繳）</option><option value="1">躉繳</option></select></label>
+<label>輸入方式<select id="pkMode"><option value="amt">以保額計算保費</option><option value="prem">以保費推算保額</option></select></label>
+<label>投保金額（保額，萬美元）<input id="pkAmt" type="number" step="0.1" value="25.2"></label>
+<label>每期保費（美元）<input id="pkPrem" type="number" step="1"></label>
+<label>紅利情境<select id="pkS"><option value="M">中分紅（建議書預設）</option><option value="L">低分紅</option><option value="G">保證（不含紅利）</option></select></label>
+<label>美元匯率（USD/TWD）<input id="pkFx" type="number" value="32" step="0.01"></label>
+<label>顯示幣別<select id="pkU"><option value="TWD">台幣</option><option value="USD">美元</option></select></label></div>
+<div class="grid" style="margin-top:8px">
+<label>比較房貸本金（萬台幣）<input id="pkMP" type="number" value="1000"></label>
+<label>利率（%）<input id="pkMR" type="number" step="0.01" value="2.6"></label>
+<label>年期（年）<input id="pkMY" type="number" value="30"></label>
+<label>寬限期（年）<input id="pkMG" type="number" value="0"></label></div>
+<p id="pkInfo"></p><p id="pkHit"></p>
+<div class="tw"><table id="pkT"></table></div>
+<h2>分紅保單（PFK）手動輸入：第15–16年保價金 vs 剩餘房貸</h2>
 <p class="warn">以下預設為講者舉例（簡報試算表：貸款1000萬、2.6%、30年；分紅保費2,063,949元×2年期），保單現金價值非保證，請改填您建議書上的數字。</p>
 <div class="grid">
 <label>第15年末保價金（元）<input id="C15" type="number" value="5762435"></label>
@@ -49,7 +70,6 @@
 <tr><td>20</td><td class="n">4,226,322</td><td class="n">6,810,793</td><td class="n neg">-2,584,471</td></tr></table></div>
 <p><small>簡報另載：分紅保單身故領回 9,456,488 元；第16年起投資600萬每年配息 639,163 元（舉例，非保證）。</small></p>
 <h2>沒規劃（房奴的一生）vs 有規劃</h2>
-<p class="warn">講者舉例，非保證；配息與保單現金價值皆會變動，僅供觀念對照。</p>
 <div class="tw"><table><tr><th>項目</th><th>沒規劃（房奴的一生）</th><th>有規劃（房產活化試算）</th></tr>
 <tr><td>起點</td><td>22歲出社會，月薪40,000；30歲存240萬頭期款，月薪60,000</td><td>房子貸款1000萬，利率2.6%，30年</td></tr>
 <tr><td>房貸</td><td>買1200萬物件、貸款1000萬，30年每月付40,000</td><td>每月本利攤還40,034（由配息支付）</td></tr>
@@ -118,5 +138,34 @@ if(typeof fetch==='function')Promise.all(['funds.json','theme_funds.json','new_h
 ['pfAmt','pfFx','pfFee'].forEach(k=>g(k).addEventListener('input',calcPF));
 g('pfAdd').onclick=()=>{if(rows.length<MAX){rows.push({code:'',pct:0});draw()}};
 g('pfEven').onclick=()=>{const n=rows.length,b=Math.floor(1000/n)/10;rows.forEach((r,i)=>r.pct=i===n-1?+(100-b*(n-1)).toFixed(1):b);draw()};
+})();
+</script><script>
+(function(){let GR=null,META=null;const g=id=>document.getElementById(id),n=x=>Number(g(x).value);
+const f=x=>isFinite(x)?Math.round(x).toLocaleString("zh-TW"):"—";
+function remAt(m,p,R,y,gr){const r=R/100/12,N=(y-gr)*12;const pmt=r===0?p/N:p*r/(1-Math.pow(1+r,-N));
+ if(m<=gr*12)return p;const k=m-gr*12;if(k>=N)return 0;return Math.max(0,r===0?p-pmt*k:p*Math.pow(1+r,k)-pmt*((Math.pow(1+r,k)-1)/r))}
+const rate=(c,amt)=>amt>=META.discount_threshold_wan?c.r:c.r/(1-META.discount);
+function sync(src){const c=cur();if(!c)return;
+ if(g("pkMode").value==="prem"||src==="prem"){const P=n("pkPrem");let a=P/c.r;if(a<META.discount_threshold_wan)a=P/(c.r/(1-META.discount));g("pkAmt").value=+a.toFixed(2)}
+ else g("pkPrem").value=Math.round(n("pkAmt")*rate(c,n("pkAmt")))}
+const cur=()=>GR&&GR[(g("pkSex").value)+(g("pkPay").value)+"_"+Math.round(n("pkAge"))];
+function pk(){const c=cur(),T=g("pkT");if(!GR){return}
+ if(!c){T.innerHTML="";g("pkInfo").innerHTML='<span class="neg">此年齡／繳費年期不在可投保範圍（2年期約0–78歲、躉繳0–80歲）</span>';g("pkHit").innerHTML="";return}
+ const s=g("pkS").value,amt=n("pkAmt"),fx=n("pkFx"),usd=g("pkU").value==="USD",k=usd?1:fx,u=usd?"美元":"台幣",pay=+g("pkPay").value,P=n("pkPrem");
+ const p=n("pkMP")*1e4;let hit=0,h=`<tr><th>年</th><th>年齡</th><th class="n">累計保費</th><th class="n">解約總額</th><th class="n">身故總額</th><th class="n">剩餘房貸</th><th class="n">差額</th></tr>`;
+ const age=Math.round(n("pkAge"));
+ c["cv"+s].forEach((cv,i)=>{const y=i+1,paid=P*Math.min(y,pay)*k,cvx=cv*amt*k,db=c["db"+s][i]*amt*k,l=remAt(y*12,p,n("pkMR"),n("pkMY"),n("pkMG"))/(usd?fx:1),df=cvx-l;if(!hit&&df>=0)hit=y;
+  h+=`<tr${y===hit?' class="hl"':''}><td>${y}</td><td>${age+y-1}</td><td class="n">${f(paid)}</td><td class="n">${f(cvx)}</td><td class="n">${f(db)}</td><td class="n">${f(l)}</td><td class="n ${df<0?'neg':'pos'}">${f(df)}</td></tr>`});
+ T.innerHTML=h;
+ g("pkInfo").innerHTML=`<small>單位：${u}（匯率 ${fx}）。保額 ${amt} 萬美元；每期保費 ${f(P)} 美元＝${f(P*fx)} 台幣 × ${pay} 期。${amt>c.mx?'<span class="neg">保額超過此年齡上限 '+c.mx+' 萬美元</span>':''}${amt<2?'<span class="neg">保額低於下限 2 萬美元</span>':''} 房貸以台幣計，美元顯示時除以匯率。</small>`;
+ g("pkHit").innerHTML=hit?`<b>第 ${hit} 年末起，解約總額可清償剩餘房貸</b>（此情境、預估值，非保證）`:'<b>表列年度內解約總額未達剩餘房貸</b>（此情境、預估值）';window.__pkHit=hit}
+const set=(o)=>{for(const k in o)g(k).value=o[k];sync(o.pkPrem!==undefined?"prem":"amt");pk()};
+g("pkPre1").onclick=()=>set({pkAge:60,pkSex:"F",pkPay:"2",pkMode:"prem",pkFx:32,pkPrem:Math.round(2063949/32),pkMP:1000,pkMR:2.6,pkMY:30,pkMG:0});
+g("pkPre2").onclick=()=>set({pkAge:28,pkSex:"M",pkPay:"1",pkMode:"amt",pkAmt:28.9,pkMP:800,pkMR:2.6,pkMY:30,pkMG:3});
+["pkAge","pkSex","pkPay","pkMode"].forEach(k=>{g(k).addEventListener("change",()=>{sync();pk()});g(k).addEventListener("input",()=>{sync();pk()})});
+g("pkAmt").addEventListener("input",()=>{g("pkMode").value="amt";sync("amt");pk()});
+g("pkPrem").addEventListener("input",()=>{g("pkMode").value="prem";sync("prem");pk()});
+["pkS","pkU"].forEach(k=>g(k).addEventListener("change",pk));["pkFx","pkMP","pkMR","pkMY","pkMG"].forEach(k=>g(k).addEventListener("input",pk));
+if(typeof fetch==="function")fetch("data/pfk_grid.json").then(r=>r.json()).then(d=>{GR=d.grid;META=d.meta;g("pkPre1").onclick()}).catch(()=>{g("pkInfo").innerHTML='<span class="neg">PFK 試算資料載入失敗（需以網站方式開啟，不支援直接開檔）</span>'});
 })();
 </script></body></html>
