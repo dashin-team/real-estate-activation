@@ -12,8 +12,20 @@
 <label>投資金額（萬）<input id="I" type="number" value="300"></label>
 <label>年化配息率（%，參考）<input id="D" type="number" value="10.68" step="0.01"></label>
 <label>已繳期數（月）<input id="K" type="number" value="180"></label></div>
+<p><label style="display:flex;gap:8px;align-items:center"><input type="checkbox" id="usePF" style="width:auto"> 以下方「配息基金投資組合」每月配息合計取代配息率試算</label><small id="pfUsed"></small></p>
 <div class="tw"><table id="out"></table></div>
 <p><small>缺口為負數，代表配息不足以支付房貸月付金。</small></p>
+<h2>配息基金投資組合試算</h2>
+<p class="warn"><b>配息不保證。</b>基金淨值與配息會變動，過去配息不代表未來表現；匯差、轉換費與稅費未計入，實際以保險公司試算與正式文件為準。</p>
+<div class="grid">
+<label>總投資金額（台幣）<input id="pfAmt" type="number" value="6000000"></label>
+<label>美元匯率（USD/TWD）<input id="pfFx" type="number" value="32" step="0.01"></label>
+<label>費用係數（金額×係數）<input id="pfFee" type="number" value="0.95" step="0.01"></label></div>
+<div id="pfRows"></div>
+<p><button id="pfAdd" type="button">＋ 新增基金</button> <button id="pfEven" type="button">平均分配</button> <span id="pfSum"></span></p>
+<div class="tw"><table id="pfTbl"></table></div>
+<p><small id="pfNote">資料載入中…</small></p>
+<p><small>公式：分配金額＝總投資金額×比例；外幣基金先換算成該基金幣別；買到單位數＝金額×係數÷淨值；每月配息＝單位數×每單位配息×年配息次數÷12（季配、半年配、年配以月平均顯示），再換回台幣。其他幣別以臺灣銀行即期買賣中價換算。</small></p>
 <h2>分紅保單（PFK）第15–16年：保價金 vs 剩餘房貸</h2>
 <p class="warn">以下預設為講者舉例（簡報試算表：貸款1000萬、2.6%、30年；分紅保費2,063,949元×2年期），保單現金價值非保證，請改填您建議書上的數字。</p>
 <div class="grid">
@@ -36,11 +48,22 @@
 <tr><td>17</td><td class="n">5,294,534</td><td class="n">6,165,931</td><td class="n neg">-871,397</td></tr>
 <tr><td>20</td><td class="n">4,226,322</td><td class="n">6,810,793</td><td class="n neg">-2,584,471</td></tr></table></div>
 <p><small>簡報另載：分紅保單身故領回 9,456,488 元；第16年起投資600萬每年配息 639,163 元（舉例，非保證）。</small></p>
+<h2>沒規劃（房奴的一生）vs 有規劃</h2>
+<p class="warn">講者舉例，非保證；配息與保單現金價值皆會變動，僅供觀念對照。</p>
+<div class="tw"><table><tr><th>項目</th><th>沒規劃（房奴的一生）</th><th>有規劃（房產活化試算）</th></tr>
+<tr><td>起點</td><td>22歲出社會，月薪40,000；30歲存240萬頭期款，月薪60,000</td><td>房子貸款1000萬，利率2.6%，30年</td></tr>
+<tr><td>房貸</td><td>買1200萬物件、貸款1000萬，30年每月付40,000</td><td>每月本利攤還40,034（由配息支付）</td></tr>
+<tr><td>每月現金流</td><td>薪水扣房貸，自己負擔</td><td>投資600萬月配53,264，付房貸後剩13,230</td></tr>
+<tr><td>分紅保單</td><td>—</td><td>分紅保費2,063,949元，2年繳</td></tr>
+<tr><td>第15年末</td><td>持續繳房貸</td><td>本金餘額5,961,811 vs 保價5,762,435（尚不足）</td></tr>
+<tr><td>第16年末</td><td>持續繳房貸</td><td>本金餘額5,632,505 vs 保價5,960,959（可清償）</td></tr>
+<tr><td>第20年末</td><td>持續繳房貸</td><td>本金餘額4,226,322 vs 保價6,810,793</td></tr>
+<tr><td>結局</td><td>60歲繳完，有房但沒退休現金</td><td>約第16年可清償房貸；第16年起每年配息639,163</td></tr></table></div>
 <script>
 const f=n=>isFinite(n)?Math.round(n).toLocaleString("zh-TW"):"—",v=id=>Number(document.getElementById(id).value);
 const c=x=>`<td class="n ${x<0?'neg':'pos'}">${f(x)}</td>`;
 function calc(){const p=v("P")*1e4,r=v("R")/100/12,y=v("Y"),g=v("G"),k=v("K"),n=(y-g)*12;
-const pmt=r===0?p/n:p*r/(1-Math.pow(1+r,-n)),it=p*r,dv=v("I")*1e4*v("D")/100/12;
+const pmt=r===0?p/n:p*r/(1-Math.pow(1+r,-n)),it=p*r,dv=(document.getElementById("usePF")&&document.getElementById("usePF").checked&&isFinite(window.PF_M))?window.PF_M:v("I")*1e4*v("D")/100/12;
 let rem=k<=g*12?p:(r===0?p-pmt*(k-g*12):p*Math.pow(1+r,k-g*12)-pmt*((Math.pow(1+r,k-g*12)-1)/r));rem=Math.max(rem,0);const z=g===0;
 document.getElementById("out").innerHTML=`<tr><th>項目</th><th class="n">金額（元）</th></tr>
 <tr><td>寬限期內月付（只付息）</td><td class="n">${z?"無寬限期":f(it)}</td></tr>
@@ -53,5 +76,47 @@ document.getElementById("out").innerHTML=`<tr><th>項目</th><th class="n">金�
 <tr><td>剩餘本金占比</td><td class="n">${p?(rem/p*100).toFixed(1):"—"}%</td></tr>`;
 const row=(y,cv,l)=>`<tr><td>第${y}年末</td><td class="n">${f(cv)}</td><td class="n">${f(l)}</td>${c(cv-l)}<td>${cv>=l?"可清償":"尚不足"}</td></tr>`;
 document.getElementById("pfk").innerHTML=`<tr><th>時點</th><th class="n">保價金</th><th class="n">剩餘房貸</th><th class="n">差額</th><th>狀態</th></tr>`+row(15,v("C15"),v("L15"))+row(16,v("C16"),v("L16"))}
-document.querySelectorAll("input").forEach(e=>e.addEventListener("input",calc));calc();
+document.querySelectorAll("input").forEach(e=>e.addEventListener("input",calc));document.getElementById("usePF").addEventListener("change",calc);calc();
+</script>
+<script>
+(function(){
+const g=id=>document.getElementById(id),MAX=10,PER={'月配':12,'季配':4,'半年配':2,'年配':1};
+const nf=(n,d)=>isFinite(n)?n.toLocaleString("zh-TW",{minimumFractionDigits:d||0,maximumFractionDigits:d||0}):"—";
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+let ALL=[],FX={},rows=[{code:'NGB2',pct:50},{code:'ACB22',pct:30},{code:'JFP11',pct:20}],info='';
+const per=f=>f.periods_per_year!=null?f.periods_per_year:(PER[f.frequency]!=null?PER[f.frequency]:0);
+const fxOf=c=>c==='TWD'?1:c==='USD'?+g('pfFx').value:FX[c];
+const lab=f=>f.code+' '+(f.short_name||f.name)+'（'+f.currency+'・'+(f.frequency||'—')+'）';
+function draw(){
+ g('pfRows').innerHTML=rows.map((r,i)=>`<div class="grid" style="margin:6px 0"><label>基金 ${i+1}<select data-i="${i}" class="pfF"><option value="">請選擇</option>${ALL.map(f=>`<option value="${esc(f.code)}"${f.code===r.code?' selected':''}>${esc(lab(f))}</option>`).join('')}</select></label><label>比例（%）<input type="number" class="pfP" data-i="${i}" value="${r.pct}" min="0" max="100"></label><label>&nbsp;<button type="button" class="pfD" data-i="${i}">刪除</button></label></div>`).join('');
+ document.querySelectorAll('.pfF').forEach(e=>e.onchange=()=>{rows[+e.dataset.i].code=e.value;calcPF()});
+ document.querySelectorAll('.pfP').forEach(e=>e.oninput=()=>{rows[+e.dataset.i].pct=+e.value||0;calcPF()});
+ document.querySelectorAll('.pfD').forEach(e=>e.onclick=()=>{rows.splice(+e.dataset.i,1);if(!rows.length)rows.push({code:'',pct:100});draw()});
+ g('pfAdd').disabled=rows.length>=MAX;calcPF();
+}
+function calcPF(){
+ const amt=+g('pfAmt').value||0,k=+g('pfFee').value;let tot=0,sum=0,html='<tr><th>基金</th><th class="n">分配（台幣）</th><th class="n">淨值</th><th class="n">單位數</th><th class="n">每月配息（台幣）</th></tr>';
+ rows.forEach(r=>{sum+=+r.pct||0;const f=ALL.find(x=>x.code===r.code);if(!f)return;const alloc=amt*(+r.pct||0)/100,fc=fxOf(f.currency);
+  if(!(fc>0)){html+=`<tr><td>${esc(f.code)}</td><td colspan="4">缺 ${esc(f.currency)} 匯率</td></tr>`;return}
+  const units=alloc/fc*k/f.nav,mF=units*(f.dividend_per_unit||0)*per(f)/12,m=mF*fc;tot+=m;
+  html+=`<tr><td>${esc(f.code)} ${esc(f.short_name||'')}${per(f)!==12?'<small>（'+esc(f.frequency||'')+'・月平均）</small>':''}</td><td class="n">${nf(alloc)}</td><td class="n">${f.nav}</td><td class="n">${nf(units,2)}</td><td class="n">${nf(m)}</td></tr>`});
+ html+=`<tr class="hl"><td><b>每月配息合計</b></td><td class="n">${nf(amt*sum/100)}</td><td></td><td></td><td class="n"><b>${nf(tot)}</b></td></tr><tr><td>組合年化配息率（含係數）</td><td colspan="4" class="n">${amt>0?(tot*12/amt*100).toFixed(2)+'%':'—'}</td></tr>`;
+ g('pfTbl').innerHTML=html;const ok=Math.abs(sum-100)<1e-6;g('pfSum').textContent='比例合計：'+(+sum.toFixed(2))+'%'+(ok?' ✓':'（未等於100%）');g('pfSum').className=ok?'pos':'neg';
+ window.PF_M=tot;g('pfUsed').textContent='組合每月配息合計：'+nf(tot)+' 元（非保證）';if(window.calc)window.calc();
+}
+window.__pf={calcPF,set:(a,f,r)=>{ALL=a;FX=f;if(r)rows=r;draw()}};
+const BASE='https://gbnetwork168.github.io/nanen-home/data/';
+const J=n=>fetch(BASE+n,{cache:'no-cache'}).then(r=>r.ok?r.json():Promise.reject()).then(d=>({d,live:true})).catch(()=>fetch('data/'+n).then(r=>r.ok?r.json():null).then(d=>({d,live:false})).catch(()=>({d:null,live:false})));
+if(typeof fetch==='function')Promise.all(['funds.json','theme_funds.json','new_high_yield.json','rates.json'].map(J)).then(([a,b,c,rt])=>{
+ const seen=new Set();[a,b,c].forEach(x=>((x.d&&x.d.funds)||[]).forEach(f=>{if(f.status==='ok'&&f.nav>0&&!seen.has(f.code)){seen.add(f.code);ALL.push(f)}}));
+ ((rt.d&&rt.d.currencies)||[]).forEach(r=>{if(r.spot_buy&&r.spot_sell)FX[r.code]=(r.spot_buy+r.spot_sell)/2/(r.unit||1)});
+ if(a.d&&a.d.fx_usd_twd_default)g('pfFx').value=a.d.fx_usd_twd_default;
+ const live=a.live?'即時載入':'使用本機快照（2026-11-03）';
+ g('pfNote').textContent=ALL.length?`基金資料：${live}；更新時間 ${a.d?a.d.updated_at:'—'}；共 ${ALL.length} 檔可選。資料來源：富邦人壽投資型保險專區公開資料（經 gbnetwork168.github.io 整理）、臺灣銀行牌告匯率。`:'基金資料載入失敗，請稍後重新整理。';
+ draw();
+});
+['pfAmt','pfFx','pfFee'].forEach(k=>g(k).addEventListener('input',calcPF));
+g('pfAdd').onclick=()=>{if(rows.length<MAX){rows.push({code:'',pct:0});draw()}};
+g('pfEven').onclick=()=>{const n=rows.length,b=Math.floor(1000/n)/10;rows.forEach((r,i)=>r.pct=i===n-1?+(100-b*(n-1)).toFixed(1):b);draw()};
+})();
 </script></body></html>
