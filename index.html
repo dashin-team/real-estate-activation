@@ -1,0 +1,57 @@
+<!doctype html><html lang="zh-Hant"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>房貸配息與分紅保單試算</title>
+<style>body{font-family:system-ui,-apple-system,"PingFang TC","Noto Sans TC",sans-serif;max-width:720px;margin:auto;padding:16px;line-height:1.6;color:#222}h2{border-bottom:1px solid #ddd;padding-bottom:4px;margin-top:1.8em}.warn{background:#fff4e5;border-left:4px solid #f0a020;padding:10px 12px;border-radius:6px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}label{font-size:.9em;display:block}input{width:100%;box-sizing:border-box;padding:8px;font-size:1em;border:1px solid #ccc;border-radius:6px}.tw{overflow-x:auto}table{width:100%;border-collapse:collapse;margin:10px 0;font-size:.95em}td,th{border-bottom:1px solid #eee;padding:6px;text-align:left}td.n,th.n{text-align:right;font-variant-numeric:tabular-nums}.neg{color:#c22}.pos{color:#18853b}tr.hl{background:#eef5ff}small{color:#666}</style></head><body>
+<h1>房貸配息與分紅保單試算</h1>
+<p class="warn"><b>配息不保證、保價金不保證。</b>本頁數字皆為舉例試算，非保證收益，不構成投資或保險建議；實際以保單建議書、銀行核貸條件及市場為準。</p>
+<h2>房貸與配息試算</h2><small>假設利率全期固定；寬限期內只付息，寬限期後本金於剩餘年限攤還</small>
+<div class="grid">
+<label>貸款本金（萬）<input id="P" type="number" value="800"></label>
+<label>貸款利率（%）<input id="R" type="number" value="2.6" step="0.01"></label>
+<label>貸款年期（年）<input id="Y" type="number" value="30"></label>
+<label>寬限期（年，無則0）<input id="G" type="number" value="3"></label>
+<label>投資金額（萬）<input id="I" type="number" value="300"></label>
+<label>年化配息率（%，參考）<input id="D" type="number" value="10.68" step="0.01"></label>
+<label>已繳期數（月）<input id="K" type="number" value="180"></label></div>
+<div class="tw"><table id="out"></table></div>
+<p><small>缺口為負數，代表配息不足以支付房貸月付金。</small></p>
+<h2>分紅保單（PFK）第15–16年：保價金 vs 剩餘房貸</h2>
+<p class="warn">以下預設為講者舉例（簡報試算表：貸款1000萬、2.6%、30年；分紅保費2,063,949元×2年期），保單現金價值非保證，請改填您建議書上的數字。</p>
+<div class="grid">
+<label>第15年末保價金（元）<input id="C15" type="number" value="5762435"></label>
+<label>第16年末保價金（元）<input id="C16" type="number" value="5960959"></label>
+<label>第15年末剩餘房貸（元）<input id="L15" type="number" value="5961811"></label>
+<label>第16年末剩餘房貸（元）<input id="L16" type="number" value="5632505"></label></div>
+<div class="tw"><table id="pfk"></table></div>
+<p><small>保價金 ≥ 剩餘房貸時，理論上可解約分紅保單清償房貸（解約前請確認解約金、稅務與保障變動）。</small></p>
+<h3>講者舉例：逐年對照（簡報）</h3>
+<div class="tw"><table><tr><th>年</th><th class="n">本金餘額</th><th class="n">保單現金價值</th><th class="n">貸款−現價</th></tr>
+<tr><td>1</td><td class="n">9,776,947</td><td class="n">1,100,190</td><td class="n"></td></tr>
+<tr><td>2</td><td class="n">9,548,025</td><td class="n">2,598,110</td><td class="n"></td></tr>
+<tr><td>5</td><td class="n">8,824,479</td><td class="n">3,800,569</td><td class="n"></td></tr>
+<tr><td>6</td><td class="n">8,570,496</td><td class="n">4,170,244</td><td class="n">4,400,252</td></tr>
+<tr><td>10</td><td class="n">7,485,951</td><td class="n">4,842,975</td><td class="n">2,642,976</td></tr>
+<tr><td>14</td><td class="n">6,282,675</td><td class="n">5,569,057</td><td class="n">713,618</td></tr>
+<tr class="hl"><td>15</td><td class="n">5,961,811</td><td class="n">5,762,435</td><td class="n">199,376</td></tr>
+<tr class="hl"><td>16</td><td class="n">5,632,505</td><td class="n">5,960,959</td><td class="n neg">-328,454</td></tr>
+<tr><td>17</td><td class="n">5,294,534</td><td class="n">6,165,931</td><td class="n neg">-871,397</td></tr>
+<tr><td>20</td><td class="n">4,226,322</td><td class="n">6,810,793</td><td class="n neg">-2,584,471</td></tr></table></div>
+<p><small>簡報另載：分紅保單身故領回 9,456,488 元；第16年起投資600萬每年配息 639,163 元（舉例，非保證）。</small></p>
+<script>
+const f=n=>isFinite(n)?Math.round(n).toLocaleString("zh-TW"):"—",v=id=>Number(document.getElementById(id).value);
+const c=x=>`<td class="n ${x<0?'neg':'pos'}">${f(x)}</td>`;
+function calc(){const p=v("P")*1e4,r=v("R")/100/12,y=v("Y"),g=v("G"),k=v("K"),n=(y-g)*12;
+const pmt=r===0?p/n:p*r/(1-Math.pow(1+r,-n)),it=p*r,dv=v("I")*1e4*v("D")/100/12;
+let rem=k<=g*12?p:(r===0?p-pmt*(k-g*12):p*Math.pow(1+r,k-g*12)-pmt*((Math.pow(1+r,k-g*12)-1)/r));rem=Math.max(rem,0);const z=g===0;
+document.getElementById("out").innerHTML=`<tr><th>項目</th><th class="n">金額（元）</th></tr>
+<tr><td>寬限期內月付（只付息）</td><td class="n">${z?"無寬限期":f(it)}</td></tr>
+<tr><td>${z?"每月本利攤還":"寬限期後月本利攤還"}</td><td class="n" id="o2">${f(pmt)}</td></tr>
+<tr><td>每月配息（非保證）</td><td class="n">${f(dv)}</td></tr>
+<tr><td>寬限期內缺口</td>${z?'<td class="n">—</td>':c(dv-it)}</tr>
+<tr><td>${z?"每月缺口":"寬限期後缺口"}</td>${c(dv-pmt)}</tr>
+<tr><td>第${Math.round(k/12)}年末剩餘本金</td><td class="n">${f(rem)}</td></tr>
+<tr><td>已攤還本金</td><td class="n">${f(p-rem)}</td></tr>
+<tr><td>剩餘本金占比</td><td class="n">${p?(rem/p*100).toFixed(1):"—"}%</td></tr>`;
+const row=(y,cv,l)=>`<tr><td>第${y}年末</td><td class="n">${f(cv)}</td><td class="n">${f(l)}</td>${c(cv-l)}<td>${cv>=l?"可清償":"尚不足"}</td></tr>`;
+document.getElementById("pfk").innerHTML=`<tr><th>時點</th><th class="n">保價金</th><th class="n">剩餘房貸</th><th class="n">差額</th><th>狀態</th></tr>`+row(15,v("C15"),v("L15"))+row(16,v("C16"),v("L16"))}
+document.querySelectorAll("input").forEach(e=>e.addEventListener("input",calc));calc();
+</script></body></html>
